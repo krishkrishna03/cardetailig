@@ -13,10 +13,9 @@ import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
 import {
   galleryItems as defaultGalleryItems,
-  membershipPlans as defaultMembershipPlans,
   reviews as defaultReviews,
 } from '@/data/mockData';
-import type { GalleryItem, MembershipPlan, Review } from '@/types';
+import type { GalleryItem, Review } from '@/types';
 
 const heroImg =
   'https://images.pexels.com/photos/3806249/pexels-photo-3806249.jpeg?auto=compress&cs=tinysrgb&w=1920';
@@ -31,7 +30,6 @@ const whyChoose = [
 export function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(defaultGalleryItems);
-  const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>(defaultMembershipPlans);
   const [reviews, setReviews] = useState<Review[]>(defaultReviews);
   const gallerySlides = galleryItems.slice(0, 5);
   const activeGallerySlide = gallerySlides[activeSlide];
@@ -41,9 +39,8 @@ export function Home() {
 
     const loadContent = async () => {
       try {
-        const [galleryData, membershipData, reviewData] = await Promise.all([
+        const [galleryData, reviewData] = await Promise.all([
           api.getGallery(),
-          api.getMemberships(),
           api.getReviews(),
         ]);
 
@@ -52,7 +49,6 @@ export function Home() {
         // Keep bundled content if an API response uses an older schema.
         // The slider requires both beforeImage and afterImage.
         if (isGalleryItems(galleryData)) setGalleryItems(galleryData);
-        if (Array.isArray(membershipData)) setMembershipPlans(membershipData as MembershipPlan[]);
         if (Array.isArray(reviewData)) setReviews(reviewData as Review[]);
       } catch {
         // Default content remains available when the backend is offline.
@@ -81,7 +77,7 @@ export function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/60" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 w-full pt-24">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 w-full">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -213,43 +209,6 @@ export function Home() {
                     ))}
                   </div>
                 </div>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </Section>
-
-      {/* Membership */}
-      <Section id="membership" className="bg-card/30">
-        <SectionHeading center eyebrow="Membership" title="Plans That Save You More" subtitle="Join our membership program for exclusive discounts, priority booking, and free services." />
-        <div className="grid gap-6 md:grid-cols-3">
-          {membershipPlans.map((plan, i) => (
-            <motion.div
-              key={plan.id}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-            >
-              <Card className={`relative h-full p-8 flex flex-col ${plan.popular ? 'border-gold/50 gold-glow' : ''}`}>
-                {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 gold-gradient text-black">Most Popular</Badge>
-                )}
-                <div className={`text-sm font-semibold uppercase tracking-wider mb-2 bg-gradient-to-r ${plan.color} bg-clip-text text-transparent`}>{plan.name}</div>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="font-display text-4xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
-                  <span className="text-sm text-muted-foreground">/{plan.period}</span>
-                </div>
-                <ul className="space-y-3 flex-1">
-                  {plan.benefits.map((b) => (
-                    <li key={b} className="flex items-start gap-2 text-sm">
-                      <span className="text-gold mt-0.5">✓</span> {b}
-                    </li>
-                  ))}
-                </ul>
-                <Button asChild className={`mt-6 ${plan.popular ? 'gold-gradient text-black' : ''}`} variant={plan.popular ? 'default' : 'outline'}>
-                  <Link to="/booking">Book Membership</Link>
-                </Button>
               </Card>
             </motion.div>
           ))}

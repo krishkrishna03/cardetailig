@@ -71,11 +71,13 @@ export const api = {
   },
 
   async getServices() {
-    return request('/services');
+    const data = await request('/services');
+    return Array.isArray(data) ? data : [];
   },
 
   async getMemberships() {
-    return request('/memberships');
+    const data = await request('/memberships');
+    return Array.isArray(data) ? data : [];
   },
 
   async getReviews() {

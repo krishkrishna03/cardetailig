@@ -92,7 +92,7 @@ export function Services() {
                   </p>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4">{service.description}</p>
                   <ul className="space-y-2 mb-6 flex-1">
-                    {service.benefits.map((b) => (
+                    {(service.benefits ?? []).map((b) => (
                       <li key={b} className="flex items-start gap-2 text-sm">
                         <Check className="h-4 w-4 text-gold mt-0.5 shrink-0" /> {b}
                       </li>

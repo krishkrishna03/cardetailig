@@ -9,7 +9,6 @@ import { Footer } from '@/components/layout/Footer';
 import { Home } from '@/pages/Home';
 import { About } from '@/pages/About';
 import { Services } from '@/pages/Services';
-import { AIInspection } from '@/pages/AIInspection';
 import { Gallery } from '@/pages/Gallery';
 import { Membership } from '@/pages/Membership';
 import { Booking } from '@/pages/Booking';
@@ -37,7 +36,7 @@ function PublicLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main className="pt-24">{children}</main>
       <Footer />
     </>
   );
@@ -49,7 +48,6 @@ function AppRoutes() {
       <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
       <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
       <Route path="/services" element={<PublicLayout><Services /></PublicLayout>} />
-      <Route path="/ai-inspection" element={<PublicLayout><AIInspection /></PublicLayout>} />
       <Route path="/gallery" element={<PublicLayout><Gallery /></PublicLayout>} />
       <Route path="/membership" element={<PublicLayout><Membership /></PublicLayout>} />
       <Route path="/booking" element={<PublicLayout><Booking /></PublicLayout>} />

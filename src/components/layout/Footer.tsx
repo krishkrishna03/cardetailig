@@ -12,7 +12,6 @@ const footerLinks = {
     { label: 'Ceramic Coating', path: '/services' },
     { label: 'PPF Installation', path: '/services' },
     { label: 'Interior Detailing', path: '/services' },
-    { label: 'AI Inspection', path: '/ai-inspection' },
   ],
   Support: [
     { label: 'Contact', path: '/contact' },

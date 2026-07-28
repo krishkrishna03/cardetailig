@@ -19,7 +19,7 @@ export function Membership() {
     const loadPlans = async () => {
       try {
         const data = await api.getMemberships();
-        if (active) setMembershipPlans(data as MembershipPlan[]);
+        if (active) setMembershipPlans(Array.isArray(data) ? data : []);
       } catch {
         if (active) setMembershipPlans([]);
       }
@@ -37,7 +37,7 @@ export function Membership() {
 
       <Section className="pt-0">
         <div className="grid gap-8 md:grid-cols-3 max-w-5xl mx-auto">
-          {membershipPlans.map((plan, i) => (
+          {(membershipPlans || []).map((plan, i) => (
             <motion.div
               key={plan.id}
               initial={{ opacity: 0, y: 24 }}
@@ -62,7 +62,7 @@ export function Membership() {
                 <p className="text-sm text-muted-foreground mb-6">Billed monthly. Cancel anytime.</p>
 
                 <ul className="space-y-3 flex-1">
-                  {plan.benefits.map((b) => (
+                  {(plan.benefits ?? []).map((b) => (
                     <li key={b} className="flex items-start gap-2.5 text-sm">
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full gold-gradient text-black mt-0.5">
                         <Check className="h-3 w-3" />
