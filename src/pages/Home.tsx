@@ -11,6 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
+import {
+  galleryItems as defaultGalleryItems,
+  membershipPlans as defaultMembershipPlans,
+  reviews as defaultReviews,
+} from '@/data/mockData';
 import type { GalleryItem, MembershipPlan, Review } from '@/types';
 
 const heroImg =
@@ -25,10 +30,11 @@ const whyChoose = [
 
 export function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(defaultGalleryItems);
+  const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>(defaultMembershipPlans);
+  const [reviews, setReviews] = useState<Review[]>(defaultReviews);
   const gallerySlides = galleryItems.slice(0, 5);
+  const activeGallerySlide = gallerySlides[activeSlide];
 
   useEffect(() => {
     let active = true;
@@ -43,15 +49,13 @@ export function Home() {
 
         if (!active) return;
 
-        setGalleryItems(galleryData as GalleryItem[]);
-        setMembershipPlans(membershipData as MembershipPlan[]);
-        setReviews(reviewData as Review[]);
+        // Keep bundled content if an API response uses an older schema.
+        // The slider requires both beforeImage and afterImage.
+        if (isGalleryItems(galleryData)) setGalleryItems(galleryData);
+        if (Array.isArray(membershipData)) setMembershipPlans(membershipData as MembershipPlan[]);
+        if (Array.isArray(reviewData)) setReviews(reviewData as Review[]);
       } catch {
-        if (active) {
-          setGalleryItems([]);
-          setMembershipPlans([]);
-          setReviews([]);
-        }
+        // Default content remains available when the backend is offline.
       }
     };
 
@@ -159,23 +163,27 @@ export function Home() {
             </Button>
           </div>
         </div>
+        {activeGallerySlide ? (
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <BeforeAfterSlider
-              key={gallerySlides[activeSlide].id}
-              beforeImage={gallerySlides[activeSlide].beforeImage}
-              afterImage={gallerySlides[activeSlide].afterImage}
+              key={activeGallerySlide.id}
+              beforeImage={activeGallerySlide.beforeImage}
+              afterImage={activeGallerySlide.afterImage}
             />
           </div>
           <div className="flex flex-col justify-center">
-            <Badge className="w-fit mb-3 capitalize">{gallerySlides[activeSlide].category}</Badge>
-            <h3 className="font-display text-2xl font-bold mb-2">{gallerySlides[activeSlide].title}</h3>
-            <p className="text-muted-foreground">{gallerySlides[activeSlide].description}</p>
+            <Badge className="w-fit mb-3 capitalize">{activeGallerySlide.category}</Badge>
+            <h3 className="font-display text-2xl font-bold mb-2">{activeGallerySlide.title}</h3>
+            <p className="text-muted-foreground">{activeGallerySlide.description}</p>
             <Button asChild className="mt-6 w-fit" variant="outline">
               <Link to="/gallery">View Full Gallery <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
+        ) : (
+          <p className="text-muted-foreground">Gallery transformations are loading. Please check back shortly.</p>
+        )}
       </Section>
 
       {/* Testimonials */}
@@ -273,4 +281,12 @@ export function Home() {
       </section>
     </>
   );
+}
+
+function isGalleryItems(value: unknown): value is GalleryItem[] {
+  return Array.isArray(value) && value.every((item) => (
+    typeof item === 'object' && item !== null
+    && typeof (item as GalleryItem).beforeImage === 'string'
+    && typeof (item as GalleryItem).afterImage === 'string'
+  ));
 }
