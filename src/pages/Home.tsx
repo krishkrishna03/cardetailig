@@ -13,16 +13,9 @@ import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
 import {
   galleryItems as defaultGalleryItems,
-<<<<<<< HEAD
   reviews as defaultReviews,
 } from '@/data/mockData';
 import type { GalleryItem, Review } from '@/types';
-=======
-  membershipPlans as defaultMembershipPlans,
-  reviews as defaultReviews,
-} from '@/data/mockData';
-import type { GalleryItem, MembershipPlan, Review } from '@/types';
->>>>>>> c3b6216f1397fa3e645b935e804cac15ab10f4d7
 
 const heroImg =
   'https://images.pexels.com/photos/3806249/pexels-photo-3806249.jpeg?auto=compress&cs=tinysrgb&w=1920';
@@ -37,10 +30,6 @@ const whyChoose = [
 export function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(defaultGalleryItems);
-<<<<<<< HEAD
-=======
-  const [membershipPlans, setMembershipPlans] = useState<MembershipPlan[]>(defaultMembershipPlans);
->>>>>>> c3b6216f1397fa3e645b935e804cac15ab10f4d7
   const [reviews, setReviews] = useState<Review[]>(defaultReviews);
   const gallerySlides = galleryItems.slice(0, 5);
   const activeGallerySlide = gallerySlides[activeSlide];
@@ -60,10 +49,6 @@ export function Home() {
         // Keep bundled content if an API response uses an older schema.
         // The slider requires both beforeImage and afterImage.
         if (isGalleryItems(galleryData)) setGalleryItems(galleryData);
-<<<<<<< HEAD
-=======
-        if (Array.isArray(membershipData)) setMembershipPlans(membershipData as MembershipPlan[]);
->>>>>>> c3b6216f1397fa3e645b935e804cac15ab10f4d7
         if (Array.isArray(reviewData)) setReviews(reviewData as Review[]);
       } catch {
         // Default content remains available when the backend is offline.
